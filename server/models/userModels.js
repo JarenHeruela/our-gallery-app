@@ -1,11 +1,11 @@
 require('dotenv').config();
-const { createClient } = require('@supabase/supabase-js');
 const bcrypt = require('bcryptjs');
+const supabase = require('../config/supabaseConfig');
 
-const supabaseUrl = process.env.supabaseUrl;
-const supabaseKey = process.env.supabaseKey;
-
-const supabase = createClient(supabaseUrl, supabaseKey);
+// const { createClient } = require('@supabase/supabase-js');
+// const supabaseUrl = process.env.supabaseUrl;
+// const supabaseKey = process.env.supabaseKey;
+// const supabase = createClient(supabaseUrl, supabaseKey);
 
 const User = {
   create: async (username, email, password) => {
@@ -24,6 +24,14 @@ const User = {
       .single();
     return { data, error };
   },
+
+  verifyEmail: async(email) => {
+    const { data, error } = await supabase
+      .from('users')
+      .update({ is_verified: true })
+      .eq('email', email);
+    return { data, error };
+  }
 };
 
 module.exports = User;
